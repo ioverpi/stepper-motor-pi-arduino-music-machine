@@ -1,6 +1,6 @@
 let net = require("net");
 
-let client = net.connect({port: 8080}, function(){
+let client = net.connect({port:8080}, function(){
     console.log("Connected to server!");
 });
 
