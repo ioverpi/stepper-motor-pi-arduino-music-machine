@@ -18,7 +18,7 @@ const Player = new MidiPlayer.Player(function(event){
     }
 });
 
-Player.loadFile("./midi_files/Axel_F2.mid");
+Player.loadFile("./midi_files/Axel_F.mid");
 Player.play();
 
 //setTimeout(() => {Player.stop()}, 1000);

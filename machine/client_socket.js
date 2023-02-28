@@ -1,4 +1,5 @@
 let net = require("net");
+let path = require("path");
 //const fs = require("fs");
 //const csvParser = require("csv-parser");
 const easymidi = require('easymidi');
@@ -6,6 +7,7 @@ const MidiPlayer = require('midi-player-js');
 
 const secret_phrase = process.env.SECRET_PHRASE || "241375869";
 const OUTPUT_NAME = 'VirtualMIDISynth #1';
+const MIDI_FILE_DIR = "midi_files";
 //const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
 
 /*
@@ -57,7 +59,6 @@ client.on("connect", function(data){
 });
 
 client.on("data", function(data){
-    console.log(data.toString());
     let regexMatch = data.toString().match(/([^=]+)=([^=]*)/);
     if(!regexMatch){
         console.log("Server sent malformed request.");
@@ -70,11 +71,24 @@ client.on("data", function(data){
 
     switch(command){
         case "play":
-            Player.loadFile("./midi_files/Axel_F2.mid");
-            Player.play();
+            try{
+                Player.loadFile(path.resolve(MIDI_FILE_DIR, payload));
+                Player.play();
+            }catch(error){
+                console.log(error);
+            }
             break;
         case "stop":
             Player.stop();
+
+            // The purpose of this code is to stop the motors from spinning 
+            // forever once the song ends. This will have to be tested on
+            // the actual system.
+            for(let i = 1; i <= 4; i++){
+                output.send("noteoff", {
+                    channel: i
+                });
+            }
             break;
         case "authenticate":
             client.write(`password=${secret_phrase}`);
