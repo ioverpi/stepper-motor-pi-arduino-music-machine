@@ -9,7 +9,7 @@ const OUTPUT_NAME = 'VirtualMIDISynth #1';
 const output = new easymidi.Output(OUTPUT_NAME);
 
 const Player = new MidiPlayer.Player(function(event){
-    console.log(event);
+    //console.log(event);
     if(event.name == "Note on"){
       output.send("noteon", {
           note: event.noteNumber,
@@ -40,15 +40,17 @@ client.on("data", function(data){
     //console.log(command, payload);
 
     switch(command){
+        case "play":
+            Player.loadFile("./midi_files/Axel_F2.mid");
+            Player.play();
         case "authenticate":
             client.write(`password=${secret_phrase}`);
             break;
+        default:
+            console.log("Server sent an unknown command.");
+            break;
     }
 })
-
-setTimeout(function(){
-    client.write("hello=");
-},1000)
 
 client.on("end", function(){
     console.log("Disconnected from server");

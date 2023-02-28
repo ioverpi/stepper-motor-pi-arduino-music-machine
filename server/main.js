@@ -11,6 +11,15 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
+app.get("/play", (req, res) => {
+    if(client_socket){
+        client_socket.write("play=");
+    }
+    res.send("Playing");
+});
+
+let client_socket = null;
+
 let server = net.createServer(function(socket){
     console.log("client connected");
 
@@ -38,6 +47,7 @@ let server = net.createServer(function(socket){
                     socket.authenticated = true;
                 }
                 console.log("Client authenticated.");
+                client_socket = socket;
             } else {
                 socket.write("authenticate=");
             }
