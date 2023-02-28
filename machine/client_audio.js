@@ -9,17 +9,19 @@ const MidiPlayer = require('midi-player-js');
 
 const Player = new MidiPlayer.Player(function(event){
     console.log(event);
-    output.send("noteon", {
-        note: event.noteNumber,
-        velocity: event.velocity,
-        channel: event.channel
-    })
+    if(event.name == "Note on"){
+      output.send("noteon", {
+          note: event.noteNumber,
+          velocity: event.velocity,
+          channel: event.channel
+      });
+    }
 });
 
-Player.loadFile("./Axel_F2.mid");
+Player.loadFile("./midi_files/Axel_F2.mid");
 Player.play();
 
-setTimeout(() => {Player.stop()}, 1000);
+//setTimeout(() => {Player.stop()}, 1000);
 
 /*
 output.send('noteoff', {

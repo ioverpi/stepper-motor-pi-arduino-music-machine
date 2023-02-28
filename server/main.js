@@ -2,6 +2,7 @@ require("dotenv").config();
 const net = require("net");
 const express = require("express");
 const app = express();
+
 const http_port = process.env.HTTP_PORT || 8080;
 const sock_port = process.env.SOCK_PORT || 8081;
 const secret_phrase = process.env.SECRET_PHRASE || "241375869";
@@ -49,8 +50,6 @@ let server = net.createServer(function(socket){
                 break;
         }
     });
-
-    socket.write("Hello World!\n");
 });
 
 app.listen(http_port, () => {
