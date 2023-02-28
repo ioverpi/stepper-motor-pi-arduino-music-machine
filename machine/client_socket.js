@@ -1,8 +1,6 @@
 let net = require("net");
 let path = require("path");
 const process = require("process");
-//const fs = require("fs");
-//const csvParser = require("csv-parser");
 const easymidi = require('easymidi');
 const MidiPlayer = require('midi-player-js');
 
@@ -11,37 +9,9 @@ const OUTPUT_NAME = 'VirtualMIDISynth #1';
 const MIDI_FILE_DIR = "midi_files";
 //const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
 
-/*
-const result = [];
-const songnameToFilename = new Object();
-
-fs.createReadStream("filenames.csv", {encoding: "utf-8"})
-.pipe(csvParser())
-.on("data", (chunk) => {
-    result.push(chunk);
-})
-.on("error", (error) => {
-    console.log(error);
-})
-.on("end", () => {
-    for(data of result){
-        songnameToFilename[data.Songname] = data.Filename;
-    }
-})
-*/
-/*
-try{
-    const data = fs.readFileSync("filenames.csv", "utf8");
-    console.log(data.split("\n"));
-}catch(err){
-    console.log(error);
-}
-*/
-
 const output = new easymidi.Output(OUTPUT_NAME);
 
 const Player = new MidiPlayer.Player(function(event){
-    //console.log(event);
     if(event.name == "Note on"){
       output.send("noteon", {
           note: event.noteNumber,
@@ -68,7 +38,6 @@ client.on("data", function(data){
 
     let command = regexMatch[1];
     let payload = regexMatch[2];
-    //console.log(command, payload);
 
     switch(command){
         case "play":

@@ -37,8 +37,6 @@ let server = net.createServer(function(socket){
         client_socket = null;
     });
 
-    //socket.on("")
-
     socket.on("data", function(data){
         let regexMatch = data.toString().match(/([^=]+)=([^=]*)/);
         if(!regexMatch){
@@ -49,7 +47,6 @@ let server = net.createServer(function(socket){
 
         let command = regexMatch[1];
         let payload = regexMatch[2];
-        //console.log(command, payload);
 
         if(!socket.authenticated){
             if(command == "password"){
