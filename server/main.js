@@ -67,6 +67,14 @@ let server = net.createServer(function(socket){
                 break;
         }
     });
+
+    socket.on("error", function(error){
+        console.log("Error:", error);
+    });
+});
+
+server.on("error", function(error){
+    console.log("Error:", error);
 });
 
 app.listen(http_port, () => {
