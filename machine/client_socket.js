@@ -1,5 +1,6 @@
 let net = require("net");
 let path = require("path");
+const process = require("process");
 //const fs = require("fs");
 //const csvParser = require("csv-parser");
 const easymidi = require('easymidi');
@@ -101,4 +102,9 @@ client.on("data", function(data){
 
 client.on("end", function(){
     console.log("Disconnected from server");
+})
+
+process.on("SIGINT", (signal) => {
+    client.destroy();
+    process.exit(0);
 })

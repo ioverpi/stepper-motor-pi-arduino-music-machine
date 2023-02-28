@@ -14,8 +14,10 @@ app.get("/", (req, res) => {
 app.get("/play/:songname", (req, res) => {
     if(client_socket){
         client_socket.write(`play=${req.params.songname}`);
+        res.send("Playing");
+    }else{
+        res.send("Failed to play");
     }
-    res.send("Playing");
 });
 
 app.get("/stop", (req, res) => {
@@ -32,6 +34,7 @@ let server = net.createServer(function(socket){
 
     socket.on("end", function(){
         console.log("Client disconnected");
+        client_socket = null;
     });
 
     //socket.on("")
@@ -69,6 +72,7 @@ let server = net.createServer(function(socket){
     });
 
     socket.on("error", function(error){
+        // TODO: Handle the client disconnecting unexpectedly.
         console.log("Error:", error);
     });
 });
