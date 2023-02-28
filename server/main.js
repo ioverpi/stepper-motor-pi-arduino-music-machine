@@ -11,9 +11,9 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
-app.get("/play", (req, res) => {
+app.get("/play/:songname", (req, res) => {
     if(client_socket){
-        client_socket.write("play=");
+        client_socket.write(`play=${req.params.songname}`);
     }
     res.send("Playing");
 });

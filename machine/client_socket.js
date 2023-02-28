@@ -1,10 +1,39 @@
 let net = require("net");
+//const fs = require("fs");
+//const csvParser = require("csv-parser");
 const easymidi = require('easymidi');
 const MidiPlayer = require('midi-player-js');
 
 const secret_phrase = process.env.SECRET_PHRASE || "241375869";
 const OUTPUT_NAME = 'VirtualMIDISynth #1';
 //const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
+
+/*
+const result = [];
+const songnameToFilename = new Object();
+
+fs.createReadStream("filenames.csv", {encoding: "utf-8"})
+.pipe(csvParser())
+.on("data", (chunk) => {
+    result.push(chunk);
+})
+.on("error", (error) => {
+    console.log(error);
+})
+.on("end", () => {
+    for(data of result){
+        songnameToFilename[data.Songname] = data.Filename;
+    }
+})
+*/
+/*
+try{
+    const data = fs.readFileSync("filenames.csv", "utf8");
+    console.log(data.split("\n"));
+}catch(err){
+    console.log(error);
+}
+*/
 
 const output = new easymidi.Output(OUTPUT_NAME);
 
