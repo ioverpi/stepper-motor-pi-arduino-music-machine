@@ -18,6 +18,13 @@ app.get("/play", (req, res) => {
     res.send("Playing");
 });
 
+app.get("/stop", (req, res) => {
+    if(client_socket){
+        client_socket.write("stop=");
+    }
+    res.send("Stop");
+});
+
 let client_socket = null;
 
 let server = net.createServer(function(socket){

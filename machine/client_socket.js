@@ -43,6 +43,10 @@ client.on("data", function(data){
         case "play":
             Player.loadFile("./midi_files/Axel_F2.mid");
             Player.play();
+            break;
+        case "stop":
+            Player.stop();
+            break;
         case "authenticate":
             client.write(`password=${secret_phrase}`);
             break;
