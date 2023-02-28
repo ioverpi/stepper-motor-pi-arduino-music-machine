@@ -42,6 +42,10 @@ client.on("data", function(data){
     switch(command){
         case "play":
             try{
+                // TODO: Make this safer.
+                // The following code may be useful later to prevent people from trying to access places they shouldn't.
+                // var safeSuffix = path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, '');
+                // var safeJoin = path.join(basePath, safeSuffix);
                 Player.loadFile(path.resolve(MIDI_FILE_DIR, payload));
                 Player.play();
             }catch(error){

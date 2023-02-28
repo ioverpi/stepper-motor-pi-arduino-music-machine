@@ -49,6 +49,7 @@ let server = net.createServer(function(socket){
         let payload = regexMatch[2];
 
         if(!socket.authenticated){
+            // TODO: Add some code to kick clients off that are bad actors. 
             if(command == "password"){
                 if(secret_phrase == payload){
                     socket.authenticated = true;
