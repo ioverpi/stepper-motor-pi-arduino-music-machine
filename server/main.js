@@ -63,7 +63,7 @@ app.get("/songlist", async (req, res) => {
         //waitForData(songlist);
 
         let tries = 0;
-        let max_tries = 4;
+        let max_tries = 10;
         while(!songlist){
             await new Promise(resolve => setTimeout(resolve, 100));
             if(tries > max_tries){
