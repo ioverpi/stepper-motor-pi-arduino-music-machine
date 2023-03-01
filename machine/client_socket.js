@@ -67,11 +67,7 @@ client.on("data", function(data){
             break;
         case "songlist":
             fs.readdir(path.resolve(MIDI_FILE_DIR), (err, files) => {
-                client.write(`songlist=${files}`)
-                // console.log(files);
-                // files.forEach(file => {
-                //     console.log(file);
-                // });
+                client.write(`songlist=${files}`);
             });
             break;
         case "authenticate":

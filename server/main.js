@@ -29,6 +29,30 @@ app.get("/stop", (req, res) => {
     }
 });
 
+/*
+function waitForData(variable_name){
+    return new Promise((resolve) => {
+        let start = new Date();
+        let max_time = 4000;
+        while((new Date) - start < max_time && !pending_variables[variable_name]){
+            // pass
+        }
+        console.log(pending_variables[variable_name]);
+        resolve();
+    });
+}
+
+
+function waitForData(variable){
+    let start = new Date();
+    let max_time = 4000;
+    while((new Date) - start < max_time && !songlist){
+        // pass
+    }
+    console.log(songlist);
+}
+*/
+
 let songlist = null;
 
 app.get("/songlist", async (req, res) => {
@@ -36,17 +60,19 @@ app.get("/songlist", async (req, res) => {
 
     if(client_socket){
         client_socket.write("songlist=");
+        //waitForData(songlist);
 
         let tries = 0;
         let max_tries = 4;
         while(!songlist){
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 100));
             if(tries > max_tries){
                 break;
             }
             tries++;
         }
 
+        
         if(songlist){
             res.send({"songlist": songlist});
         }else{
@@ -93,6 +119,7 @@ let server = net.createServer(function(socket){
         switch(command){
             case "songlist":
                 songlist = payload.split(",");
+                console.log(songlist);
                 break;
             default:
                 console.log("Unknown command sent from client.");
