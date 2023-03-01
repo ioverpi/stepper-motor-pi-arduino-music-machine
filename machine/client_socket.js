@@ -1,5 +1,6 @@
-let net = require("net");
-let path = require("path");
+const net = require("net");
+const path = require("path");
+const fs = require("fs");
 const process = require("process");
 const easymidi = require('easymidi');
 const MidiPlayer = require('midi-player-js');
@@ -63,6 +64,15 @@ client.on("data", function(data){
                     channel: i
                 });
             }
+            break;
+        case "songlist":
+            fs.readdir(path.resolve(MIDI_FILE_DIR), (err, files) => {
+                client.write(`songlist=${files}`)
+                // console.log(files);
+                // files.forEach(file => {
+                //     console.log(file);
+                // });
+            });
             break;
         case "authenticate":
             client.write(`password=${secret_phrase}`);

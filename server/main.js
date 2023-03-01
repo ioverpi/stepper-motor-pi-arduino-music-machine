@@ -23,8 +23,36 @@ app.get("/play/:songname", (req, res) => {
 app.get("/stop", (req, res) => {
     if(client_socket){
         client_socket.write("stop=");
+        res.send("Stop");
+    }else{
+        res.send("Failed to stop");
     }
-    res.send("Stop");
+});
+
+let songlist = null;
+
+app.get("/songlist", async (req, res) => {
+    songlist = null;
+
+    if(client_socket){
+        client_socket.write("songlist=");
+
+        let tries = 0;
+        let max_tries = 4;
+        while(!songlist){
+            await new Promise(resolve => setTimeout(resolve, 500));
+            if(tries > max_tries){
+                break;
+            }
+            tries++;
+        }
+
+        if(songlist){
+            res.send({"songlist": songlist});
+        }else{
+            res.send("Couldn't get songlist");
+        }
+    }
 });
 
 let client_socket = null;
@@ -63,6 +91,9 @@ let server = net.createServer(function(socket){
         }
 
         switch(command){
+            case "songlist":
+                songlist = payload.split(",");
+                break;
             default:
                 console.log("Unknown command sent from client.");
                 break;
