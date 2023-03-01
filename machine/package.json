@@ -1,0 +1,17 @@
+{
+    "name": "spamm-machine",
+    "version": "1.0.0",
+    "description": "This is SPAMM, the Stepper Motor Pi Arduino Music Machine. In particular, this is code for the Pi to control the Arduino to control the stepper motors.",
+    "main": "client_socket.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Kellon Sandall",
+    "license": "GPLv3",
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "@julusian/midi": "^3.0.1",
+        "easymidi": "^3.0.1",
+        "midi-player-js": "^2.0.16"
+    }
+}
