@@ -9,7 +9,7 @@ const MidiPlayer = require('midi-player-js');
 
 const SECRET_PHRASE = process.env.SECRET_PHRASE || "241375869";
 const SERVER_HOST = process.env.SERVER_HOST || "127.0.0.1"; // Put the actual host in the .env file.
-const MIDI_PORT = process.env.MIDI_PORT || "128"; // You can probably set this by an export command or in the .env file. Otherwise, hope we're right!
+const MIDI_PORT = `${process.env.MIDI_PORT || "128"}:1`; // You can probably set this by an export command or in the .env file. Otherwise, hope we're right!
 const MIDI_FILE_DIR = "midi_files";
 // const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
 // const OUTPUT_NAME = 'VirtualMIDISynth #1';
@@ -52,7 +52,7 @@ client.on("data", function(data){
             try{
                 // TODO: Get the external program route working.
                 // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
-                midi_player = spawn("pmidi", ["-p", `${midi_port}:1`, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
+                midi_player = spawn("pmidi", ["-p", MIDI_PORT, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
 
                 midi_player.stdout.on("data", (data) => {
                     console.log(data.toString());
@@ -61,7 +61,7 @@ client.on("data", function(data){
                 midi_player.on("close", (code, signal) => {
                     console.log(`child process exited with code ${code} because of signal ${signal}`);
                     if(signal){
-                        midi_player = spawn("pmidi", ["-p", `${midi_port}:1`, "end.mid"]);
+                        midi_player = spawn("pmidi", ["-p", MIDI_PORT, "end.mid"]);
                     }
                 });
 
