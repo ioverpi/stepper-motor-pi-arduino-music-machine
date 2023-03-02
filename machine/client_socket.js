@@ -1,3 +1,4 @@
+require("dotenv").config();
 const net = require("net");
 const path = require("path");
 const fs = require("fs");
@@ -6,10 +7,12 @@ const process = require("process");
 const easymidi = require('easymidi');
 const MidiPlayer = require('midi-player-js');
 
-const secret_phrase = process.env.SECRET_PHRASE || "241375869";
-// const OUTPUT_NAME = 'VirtualMIDISynth #1';
+const SECRET_PHRASE = process.env.SECRET_PHRASE || "241375869";
+const SERVER_HOST = process.env.SERVER_HOST || "127.0.0.1"; // Put the actual host in the .env file.
+const MIDI_PORT = process.env.MIDI_PORT || "128"; // You can probably set this by an export command or in the .env file. Otherwise, hope we're right!
 const MIDI_FILE_DIR = "midi_files";
 // const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
+// const OUTPUT_NAME = 'VirtualMIDISynth #1';
 /*
 const output = new easymidi.Output(OUTPUT_NAME);
 
@@ -24,7 +27,7 @@ const Player = new MidiPlayer.Player(function(event){
 });
 */
 
-let client = net.connect({host: "192.168.1.4", port:8081}, function(){
+let client = net.connect({host: SERVER_HOST, port:8081}, function(){
     console.log("Connected to server!");
 });
 
@@ -47,7 +50,6 @@ client.on("data", function(data){
     switch(command){
         case "play":
             try{
-                let midi_port = 128;
                 // TODO: Get the external program route working.
                 // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
                 midi_player = spawn("pmidi", ["-p", `${midi_port}:1`, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
@@ -98,7 +100,7 @@ client.on("data", function(data){
             });
             break;
         case "authenticate":
-            client.write(`password=${secret_phrase}`);
+            client.write(`password=${SECRET_PHRASE}`);
             break;
         default:
             console.log("Server sent an unknown command.");
