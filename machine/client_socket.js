@@ -50,7 +50,7 @@ client.on("data", function(data){
                 let midi_port = 128;
                 // TODO: Get the external program route working.
                 // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
-                midi_player = spawn("python", ["long_process.py", "-p", `${midi_port}:1`, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
+                midi_player = spawn("pmidi", ["-p", `${midi_port}:1`, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
 
                 midi_player.stdout.on("data", (data) => {
                     console.log(data.toString());
@@ -58,6 +58,9 @@ client.on("data", function(data){
 
                 midi_player.on("close", (code, signal) => {
                     console.log(`child process exited with code ${code} because of signal ${signal}`);
+                    if(signal){
+                        midi_player.spawn("pmidi", ["-p", `${midi_port}:1`, "end.mid"]);
+                    }
                 });
 
                 // The Player code doesn't work very well with the arduino.
@@ -74,8 +77,7 @@ client.on("data", function(data){
             break;
         case "stop":
             if(midi_player && !midi_player.killed){
-                midi_player.kill()
-                midi_player.spawn("pmidi", ["-p", `${midi_port}:1`, "end.mid"])
+                midi_player.kill();
             }
             /*
             Player.stop();
