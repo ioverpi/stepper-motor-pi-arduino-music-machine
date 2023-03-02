@@ -43,6 +43,11 @@ client.on("data", function(data){
     switch(command){
         case "play":
             try{
+                // TODO: Get the external program route working.
+                // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
+
+                // The Player code doesn't work very well with the arduino.
+                // I'm not sure why. That's why we're using an external program above.
                 // TODO: Make this safer.
                 // The following code may be useful later to prevent people from trying to access places they shouldn't.
                 // var safeSuffix = path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, '');
