@@ -24,7 +24,7 @@ const Player = new MidiPlayer.Player(function(event){
 });
 */
 
-let client = net.connect({port:8081}, function(){
+let client = net.connect({host: "192.168.1.4", port:8081}, function(){
     console.log("Connected to server!");
 });
 
@@ -59,7 +59,7 @@ client.on("data", function(data){
                 midi_player.on("close", (code, signal) => {
                     console.log(`child process exited with code ${code} because of signal ${signal}`);
                     if(signal){
-                        midi_player.spawn("pmidi", ["-p", `${midi_port}:1`, "end.mid"]);
+                        midi_player = spawn("pmidi", ["-p", `${midi_port}:1`, "end.mid"]);
                     }
                 });
 
