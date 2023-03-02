@@ -1,15 +1,16 @@
 const net = require("net");
 const path = require("path");
 const fs = require("fs");
+const { spawn } = require("node:child_process");
 const process = require("process");
 const easymidi = require('easymidi');
 const MidiPlayer = require('midi-player-js');
 
 const secret_phrase = process.env.SECRET_PHRASE || "241375869";
-const OUTPUT_NAME = 'VirtualMIDISynth #1';
+// const OUTPUT_NAME = 'VirtualMIDISynth #1';
 const MIDI_FILE_DIR = "midi_files";
-//const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
-
+// const OUTPUT_NAME = "Microsoft GS Wavetable Synth";
+/*
 const output = new easymidi.Output(OUTPUT_NAME);
 
 const Player = new MidiPlayer.Player(function(event){
@@ -21,6 +22,7 @@ const Player = new MidiPlayer.Player(function(event){
       });
     }
 });
+*/
 
 let client = net.connect({port:8081}, function(){
     console.log("Connected to server!");
@@ -29,6 +31,8 @@ let client = net.connect({port:8081}, function(){
 client.on("connect", function(data){
     client.write("hello=");
 });
+
+let midi_player = null;
 
 client.on("data", function(data){
     let regexMatch = data.toString().match(/([^=]+)=([^=]*)/);
@@ -43,8 +47,18 @@ client.on("data", function(data){
     switch(command){
         case "play":
             try{
+                let midi_port = 128;
                 // TODO: Get the external program route working.
                 // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
+                midi_player = spawn("python", ["long_process.py", "-p", `${midi_port}:1`, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
+
+                midi_player.stdout.on("data", (data) => {
+                    console.log(data.toString());
+                });
+
+                midi_player.on("close", (code, signal) => {
+                    console.log(`child process exited with code ${code} because of signal ${signal}`);
+                });
 
                 // The Player code doesn't work very well with the arduino.
                 // I'm not sure why. That's why we're using an external program above.
@@ -52,13 +66,18 @@ client.on("data", function(data){
                 // The following code may be useful later to prevent people from trying to access places they shouldn't.
                 // var safeSuffix = path.normalize(unsafeSuffix).replace(/^(\.\.(\/|\\|$))+/, '');
                 // var safeJoin = path.join(basePath, safeSuffix);
-                Player.loadFile(path.resolve(MIDI_FILE_DIR, payload));
-                Player.play();
+                // Player.loadFile(path.resolve(MIDI_FILE_DIR, payload));
+                // Player.play();
             }catch(error){
                 console.log(error);
             }
             break;
         case "stop":
+            if(midi_player && !midi_player.killed){
+                midi_player.kill()
+                midi_player.spawn("pmidi", ["-p", `${midi_port}:1`, "end.mid"])
+            }
+            /*
             Player.stop();
 
             // The purpose of this code is to stop the motors from spinning 
@@ -70,6 +89,7 @@ client.on("data", function(data){
                 });
             }
             break;
+            */
         case "songlist":
             fs.readdir(path.resolve(MIDI_FILE_DIR), (err, files) => {
                 client.write(`songlist=${files}`);
