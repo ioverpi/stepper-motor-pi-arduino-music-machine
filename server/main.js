@@ -114,8 +114,16 @@ let http_server = net.createServer(function(connection){
 
     connection.on("data", function(data){
         console.log(data.toString());
-        let path = data.toString().match(/GET (.+) HTTP/)[1]
-        let parts = path.split("/");
+        let path = data.toString().match(/GET (.+) HTTP/);
+        // TODO: Implement the HEAD handler
+        // if(!path){
+        //     path = data.toString().match(/HEAD (.+) HTTP/);
+        // }
+        if(!path){
+            connection.write(createHttpResponse(501, "Method not implemented"));
+            return;
+        }
+        let parts = path[1].split("/");
         switch(parts[1]){
             case "play":
                 if(parts.length != 3){
