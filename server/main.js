@@ -135,12 +135,18 @@ let http_server = net.createServer(function(connection){
                     break;
                 }
                 let songname = sanitize(parts[2]);
-                machine_socket.write(`play=${songname}`);
                 client_socket = connection;
+                machine_socket.write(`play=${songname}`);
                 
                 break;
             case "stop":
+                client_socket = connection;
                 machine_socket.write("stop=");
+                break;
+            case "songlist":
+                client_socket = connection;
+                machine_socket.write("songlist=");
+                break;
             default:
                 connection.write(createHttpResponse(400, "Not a valid path."));
                 break;
@@ -193,6 +199,14 @@ let server = net.createServer(function(socket){
                     client_socket.write(createHttpResponse(500, res[1]))
                 }
                 
+                break;
+            case "stop":
+                res = payload.split(",");
+                if(res[0] == "success"){
+                    client_socket.write(createHttpResponse(200, "Stopped playback."));
+                }else{
+                    client_socket.write(createHttpResponse(500, res[1]));
+                }
                 break;
             case "songlist":
                 songlist = payload.split(",");

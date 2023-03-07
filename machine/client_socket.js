@@ -89,9 +89,16 @@ client.on("data", function(data){
             }
             break;
         case "stop":
-            if(midi_player && !midi_player.killed){
-                midi_player.kill();
+            try{
+                if(midi_player && !midi_player.killed){
+                    midi_player.kill();
+                }
+                client.write("stop=success,yay");
+            }catch(error){
+                client.write(`stop=error,${error}`);
+                console.log(error);
             }
+            break;
             /*
             Player.stop();
 
