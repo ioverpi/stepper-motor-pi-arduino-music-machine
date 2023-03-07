@@ -1,6 +1,7 @@
 require("dotenv").config();
 const net = require("net");
 const express = require("express");
+const { response } = require("express");
 const app = express();
 
 const http_port = process.env.HTTP_PORT || 8080;
@@ -88,6 +89,7 @@ function createHttpResponse(status_code, message){
         200: "OK", 
         400: "Bad Request", 
         404: "Not Found", 
+        500: "Internal Server Error",
         501: "Not Implemented"
     };
     let payload = new Object();
@@ -103,6 +105,8 @@ Content-Type: application/json\r
 \r
 ${json_payload}`;
 }
+
+let client_socket = null;
 
 let http_server = net.createServer(function(connection){
     console.log("client connected");
@@ -131,9 +135,12 @@ let http_server = net.createServer(function(connection){
                     break;
                 }
                 let songname = sanitize(parts[2]);
-                let document = `Playing ${songname}`;
-                connection.write(createHttpResponse(200, `Playing ${songname}.`));
+                machine_socket.write(`play=${songname}`);
+                client_socket = connection;
+                
                 break;
+            case "stop":
+                machine_socket.write("stop=");
             default:
                 connection.write(createHttpResponse(400, "Not a valid path."));
                 break;
@@ -178,6 +185,15 @@ let server = net.createServer(function(socket){
         }
 
         switch(command){
+            case "play":
+                res = payload.split(",");
+                if(res[0] == "success"){
+                    client_socket.write(createHttpResponse(200, `Playing ${res[1]}.`));
+                }else{
+                    client_socket.write(createHttpResponse(500, res[1]))
+                }
+                
+                break;
             case "songlist":
                 songlist = payload.split(",");
                 console.log(songlist);
@@ -206,6 +222,6 @@ http_server.listen(http_port, function(){
     console.log(`http server is listening on port ${http_port}.`)
 })
 
-// server.listen(sock_port, function(){
-//     console.log(`Socket server is listening on port ${sock_port}.`);
-// });
+server.listen(sock_port, function(){
+    console.log(`Socket server is listening on port ${sock_port}.`);
+});

@@ -54,6 +54,16 @@ client.on("data", function(data){
                 // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
                 midi_player = spawn("pmidi", ["-p", MIDI_PORT, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
 
+                midi_player.on("spawn", () => {
+                    console.log("Spawned");
+                    client.write(`play=success,${payload}`);
+                });
+
+                midi_player.on("error", (error) => {
+                    client.write(`play=error,${error}`);
+                    console.log(error);
+                });
+
                 midi_player.stdout.on("data", (data) => {
                     console.log(data.toString());
                 });
@@ -74,6 +84,7 @@ client.on("data", function(data){
                 // Player.loadFile(path.resolve(MIDI_FILE_DIR, payload));
                 // Player.play();
             }catch(error){
+                client.write(`play=error,${error}`);
                 console.log(error);
             }
             break;
