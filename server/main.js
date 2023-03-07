@@ -127,6 +127,10 @@ let http_server = net.createServer(function(connection){
             connection.write(createHttpResponse(501, "Method not implemented"));
             return;
         }
+        if(!machine_socket){
+            connection.write(createHttpResponse(500, "The Stepper Motor Machine is not connected."));
+            return;
+        }
         let parts = path[1].split("/");
         switch(parts[1]){
             case "play":
@@ -210,7 +214,7 @@ let server = net.createServer(function(socket){
                 break;
             case "songlist":
                 songlist = payload.split(",");
-                console.log(songlist);
+                client_socket.write(createHttpResponse(200, songlist));
                 break;
             default:
                 console.log("Unknown command sent from client.");
