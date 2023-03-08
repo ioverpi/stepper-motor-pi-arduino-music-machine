@@ -1,0 +1,42 @@
+html {
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+h1,h2 {
+    text-align: center;
+}
+
+button {
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    padding: 15px 32px;
+    cursor: pointer;
+    margin: 10px auto;
+}
+
+button {
+    background-color: #EE9828;
+    color: white;
+}
+  
+button:hover {
+    background-color: #C47D21;
+    color: white;
+}
+
+button.other {
+    background-color: #5271B2;
+    color: white;
+}
+  
+button.other:hover {
+    background-color: #4261A2;
+    color: white;
+}
