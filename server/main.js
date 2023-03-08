@@ -1,88 +1,11 @@
 require("dotenv").config();
 const net = require("net");
-const express = require("express");
-const { response } = require("express");
-const app = express();
 
 const http_port = process.env.HTTP_PORT || 8080;
 const sock_port = process.env.SOCK_PORT || 8081;
 const secret_phrase = process.env.SECRET_PHRASE || "241375869";
 
 const sanitize = (filename) => filename.replaceAll(/[^A-Za-z\d._]/g, "");
-
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-});
-
-app.get("/play/:songname", (req, res) => {
-    if(machine_socket){
-        machine_socket.write(`play=${req.params.songname}`);
-        res.send("Playing");
-    }else{
-        res.send("Failed to play");
-    }
-});
-
-app.get("/stop", (req, res) => {
-    if(machine_socket){
-        machine_socket.write("stop=");
-        res.send("Stop");
-    }else{
-        res.send("Failed to stop");
-    }
-});
-
-/*
-function waitForData(variable_name){
-    return new Promise((resolve) => {
-        let start = new Date();
-        let max_time = 4000;
-        while((new Date) - start < max_time && !pending_variables[variable_name]){
-            // pass
-        }
-        console.log(pending_variables[variable_name]);
-        resolve();
-    });
-}
-
-
-function waitForData(variable){
-    let start = new Date();
-    let max_time = 4000;
-    while((new Date) - start < max_time && !songlist){
-        // pass
-    }
-    console.log(songlist);
-}
-*/
-
-let songlist = null;
-
-app.get("/songlist", async (req, res) => {
-    songlist = null;
-
-    if(machine_socket){
-        machine_socket.write("songlist=");
-        //waitForData(songlist);
-
-        let tries = 0;
-        let max_tries = 10;
-        while(!songlist){
-            await new Promise(resolve => setTimeout(resolve, 100));
-            if(tries > max_tries){
-                break;
-            }
-            tries++;
-        }
-
-        
-        if(songlist){
-            res.send({"songlist": songlist});
-        }else{
-            res.send("Couldn't get songlist");
-        }
-    }
-});
 
 function createHttpResponse(status_code, message){
     let status_messages = {
@@ -96,9 +19,11 @@ function createHttpResponse(status_code, message){
     payload["status"] =  status_code < 400? "success": "error";
     payload["message"] = message;
     json_payload = JSON.stringify(payload);
+    // TODO: Think about Access-Control-Allow-Origin: * and possible side effects. 
     return `HTTP/1.1 ${status_code} ${status_messages[status_code]}\r
 Date: ${(new Date()).toUTCString()}\r
 Server: Node\r
+Access-Control-Allow-Origin: *\r
 Accept-Ranges: bytes\r
 Content-Length: ${json_payload.length}\r
 Content-Type: application/json\r
@@ -231,10 +156,6 @@ let server = net.createServer(function(socket){
 server.on("error", function(error){
     console.log("Error:", error);
 });
-
-// app.listen(http_port, () => {
-//     console.log(`http server is listening on port ${http_port}.`);
-// });
 
 http_server.listen(http_port, function(){
     console.log(`http server is listening on port ${http_port}.`)
