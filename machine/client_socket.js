@@ -50,6 +50,9 @@ client.on("data", function(data){
     switch(command){
         case "play":
             try{
+                if(midi_player && !midi_player.killed){
+                    throw Error("Stepper Motor Machine is already playing.");
+                }
                 // TODO: Get the external program route working.
                 // exec(`pmidi -p ${midi_port}:1 ${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`);
                 midi_player = spawn("pmidi", ["-p", MIDI_PORT, `${MIDI_FILE_DIR}/${payload.replaceAll(/[^A-Za-z\d._]/g, "")}`]);
