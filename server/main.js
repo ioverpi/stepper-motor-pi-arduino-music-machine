@@ -81,7 +81,17 @@ let http_server = net.createServer(function(connection){
                 break;
         }
         // await new Promise(resolve => setTimeout(resolve, 2000));
-    })
+    });
+
+    connection.on("error", function(error){
+        console.log("Error on the connection in the http server:");
+        console.log(error);
+    });
+});
+
+http_server.on("error", function(error){
+    console.log("Error on the server side of the http server:");
+    console.log(error);
 });
 
 let machine_socket = null;
@@ -149,12 +159,14 @@ let server = net.createServer(function(socket){
 
     socket.on("error", function(error){
         // TODO: Handle the client disconnecting unexpectedly.
-        console.log("Error:", error);
+        console.log("Error in the connection of machine server:");
+        console.log(error);
     });
 });
 
 server.on("error", function(error){
-    console.log("Error:", error);
+    console.log("Error on the server side of the machine server:");
+    console.log(error);
 });
 
 http_server.listen(http_port, function(){
