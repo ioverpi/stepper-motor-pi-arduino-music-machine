@@ -36,6 +36,7 @@ client.on("connect", function(data){
 });
 
 let midi_player = null;
+let machine_playing = false;
 
 client.on("data", function(data){
     let regexMatch = data.toString().match(/([^=]+)=([^=]*)/);
@@ -50,7 +51,7 @@ client.on("data", function(data){
     switch(command){
         case "play":
             try{
-                if(midi_player && !midi_player.killed){
+                if(machine_playing){
                     throw Error("Stepper Motor Machine is already playing.");
                 }
                 // TODO: Get the external program route working.
@@ -60,6 +61,7 @@ client.on("data", function(data){
                 midi_player.on("spawn", () => {
                     console.log("Spawned");
                     client.write(`play=success,${payload}`);
+                    machine_playing = true;
                 });
 
                 midi_player.on("error", (error) => {
@@ -76,6 +78,7 @@ client.on("data", function(data){
                     if(signal){
                         midi_player = spawn("pmidi", ["-p", MIDI_PORT, "end.mid"]);
                     }
+                    machine_playing = false;
                 });
 
                 // The Player code doesn't work very well with the arduino.
@@ -93,7 +96,7 @@ client.on("data", function(data){
             break;
         case "stop":
             try{
-                if(midi_player && !midi_player.killed){
+                if(machine_playing){
                     midi_player.kill();
                 }
                 client.write("stop=success,yay");
