@@ -27,9 +27,21 @@ const Player = new MidiPlayer.Player(function(event){
 });
 */
 
-let client = net.connect({host: SERVER_HOST, port:8081}, function(){
-    console.log("Connected to server!");
-});
+console.log(SERVER_HOST)
+
+let client = new net.Socket();
+
+let connection_established = false;
+
+function connect(){
+    client.connect({
+        host: SERVER_HOST,
+        port: 8081 //Make this not hardcoded.
+    }, function(){
+        connection_established = true;
+        console.log("Connected to server!");
+    });
+}
 
 client.on("connect", function(data){
     client.write("hello=");
@@ -136,7 +148,14 @@ client.on("end", function(){
     console.log("Disconnected from server");
 })
 
+client.on("error", function(error){
+    if(!connection_established) setTimeout(connect, 5000);
+    console.log(error);
+});
+
 process.on("SIGINT", (signal) => {
     client.destroy();
     process.exit(0);
 })
+
+connect();
