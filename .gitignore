@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Latex files
+.aux
+.synctex.gz
