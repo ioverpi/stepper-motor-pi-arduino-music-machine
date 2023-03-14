@@ -106,3 +106,6 @@ dist
 # Latex files
 *.aux
 *.synctex.gz
+
+# Images
+project_images/

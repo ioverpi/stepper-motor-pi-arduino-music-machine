@@ -93,8 +93,94 @@
 	We build a stepper motor music machine with a Raspberry Pi and Arduino. 
 	
 	
-	\section{Introduction}
+	\section{Description}
 	
-	We... 
+	Stepper motors are have many interesting properties that set them apart from other types of motors. One of the important properties of stepper motors have is the ability to turn at precise rotations and speeds. If I send the signals to a stepper motor to turn exactly a quarter revolution, it will turn exactly a quarter of a revolution. This makes them especially useful in 3d printers where precision is critical. 
 	
+	A side effect of the motors spinning is vibrations. When a stepper motor is spun at a specified speed, sound is generated. We can take advantage of this and use stepper motors to create music. The main challenge is hooking them together in such a way that we can play music. 
+	
+	\section{Beginnings}
+	
+	I first found out about stepper motor music machines through Youtube. They were so intriguing to me that I decided to create my own. I first bought the stepper motors, but I realized that I needed to connect them to some device. I considered using a Raspberry Pi but, after some research, found that an Arduino with a 3d printer CNC shield would be the easiest route. I got an Arduino and CNC shield and hooked them up. 
+	
+	\begin{center}
+		\includegraphics[width=3in]{project_images/1}
+	\end{center}
+
+	I used some code built by Jonathan Kayne to run the Arduino. The code turned the Arduino into a MIDI device that could accept MIDI signals. I figured out how to open a MIDI port on my PC and connect a MIDI editor to play through that port. Once I had achieved that, I was able to hear the motors, but they didn't have any resonating chamber, so I couldn't hear them well. So I thought for a while how I would fix this. 
+	
+	\begin{center}
+		\includegraphics[width=5in]{project_images/2}
+	\end{center} 
+	
+	\section{Forming the team}
+	
+	When I heard about this competition, I thought it would be a cool idea to make the machine interactive. My vision was to have a way that people could choose which song they wanted to play with their phones. This started getting complicated, so I thought it would be a good idea to get a team together to be more efficient. So I got my friends Levi and Sterling to join me. 
+	
+	We thought of various ways that we could get phones to communicate with the machine. We came up with ideas of making apps and maybe using bluetooth. I tasked us all with finding the best/easiest way to get the communication established. 
+	
+	\section{Coding}
+	
+	Since I had some experience with node js, I decided to try out creating a HTTP server. Since bringing around a laptop everywhere with the stepper motors would be cumbersome, I decided to hook the Arduino up with a Raspberry Pi. I decided to build a centralized server to which people could connect their phones and to which I could could connect the stepper motor machine. This way, I could bring the stepper motor machine wherever I want and people could be wherever they wanted to as well. 
+	
+	This process consisted of much trial and error. I tried using a prebuilt HTTP solution called Express which is fairly popular in the node js community, but I couldn't get the data from the machine to the server and then to the phone like I wanted to. So I decided to build my own HTTP server. I learned the HTTP protocol and was able to create a REST api which could control the stepper motor machine. 
+	
+	Levi and Sterling weren't able to get another communication solution working, so we went my solution. 
+	
+	\section{Obtaining materials}
+	
+	Then came the challenge of getting the materials for the project. I happened to find this box which ended up being the perfect fit for the stepper motors. 
+	
+	\begin{center}
+		\includegraphics[width=5in]{project_images/3}
+	\end{center}
+
+	Originally, I had planned to get a metal beam and drill holes in it to mount the stepper motors on. However, this was proving difficult, so I found a 3d schematic of a stepper motor holder from Jonathan Kayne and used it to print the holder. I got it printed and it worked quite nicely. 
+	
+	\begin{center}
+		\includegraphics[width=5in]{project_images/4}
+	\end{center}
+
+	Now that I had these key components, it was time to put everything together. 
+	
+	\section{Bringing everything together}
+	
+	A couple of critical issues arose when I tried to run the stepper motors. When I initially played songs, it would start well, but after waiting for a while, the stepper motors would produce this high pitched whine when starting again. It took some digging, but eventually I found the solution. Other people had had the same problem and I used some code that they created to fix it. 
+	
+	Another problem that arose was that at certain frequencies, the stepper motors would ``stutter" and not move correctly. This also took some digging around, but eventually I found a solution which consisted of ``microstepping" the motors. Basically, this means making the motors move at more precise rotations. After this fix, they moved much better. 
+	
+	After overcoming these problems, it was time to put everything into the box. 
+	
+	\begin{center}
+		\includegraphics[width=5in]{project_images/5}
+	\end{center}
+
+	I decided the best place for the motors would be right inside the lid of the box. This would help me avoid drilling a hole through the box which would have had to have been very large to fit plugs through. 
+	
+	Then with lots of tape and faith, I got everything to fit inside. 
+	
+	\begin{center}
+		\includegraphics[width=3in]{project_images/6}
+	\end{center}
+	
+	\begin{center}
+		\includegraphics[width=5in]{project_images/7}
+	\end{center}
+
+	I got an external server running to accept connections from phones and the machine and got the machine script to run on startup and now we have what you see today. 
+	
+	\Large{\textbf{References}}
+	
+	\normalsize
+	\begin{hangparas}{.25in}{1}
+		[1] Kayne, Jonathan (2018, April 22). Arduino MIDI Stepper Synth. Arduino Project Hub. \url{https://projecthub.arduino.cc/JonJonKayne/162864dd-a994-448c-ad28-624104fe28e9}
+		
+		\iffalse
+		[1] Fielding, Mark James, ``Simulated annealing with an optimal fixed temperature" (2000). \textit{Faculty of Engineering and Information Sciences - Papers: Part A.} 2698.
+		
+		[2] Geltman, K. E. (2014, February 20). The Simulated Annealing Algorithm. Katrina Ellison Geltman. \url{http://katrinaeg.com/simulated-annealing.html}
+		
+		[3] Wikipedia contributors. (2020, December 2). Simulated annealing. Wikipedia. \url{https://en.wikipedia.org/wiki/Simulated_annealing#Acceptance_probabilities_2}
+		\fi
+	\end{hangparas}
 \end{document}
