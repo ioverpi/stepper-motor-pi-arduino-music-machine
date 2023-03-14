@@ -90,7 +90,7 @@
 	
 	\normalsize
 	
-	We build a stepper motor music machine with a Raspberry Pi and Arduino. 
+	We build a stepper motor music machine with a Raspberry Pi and an Arduino. 
 	
 	
 	\section{Description}
@@ -127,12 +127,14 @@
 	
 	Levi and Sterling weren't able to get another communication solution working, so we went my solution. 
 	
+	One other interesting aspect of the coding of this machine, was how to get MIDI signals from the Raspberry Pi to the Arduino. Initially, I thought that it wouldn't be too hard to write code to do this in javascript. However, when I played the MIDI files through javascript with node js, the motors wouldn't spin correctly quite often. I tried a couple different solutions but ultimately settled on using an external pre-written program to send the MIDI signals. Then it ran much smoother. 
+	
 	\section{Obtaining materials}
 	
 	Then came the challenge of getting the materials for the project. I happened to find this box which ended up being the perfect fit for the stepper motors. 
 	
 	\begin{center}
-		\includegraphics[width=5in]{project_images/3}
+		\includegraphics[width=3.7in]{project_images/3}
 	\end{center}
 
 	Originally, I had planned to get a metal beam and drill holes in it to mount the stepper motors on. However, this was proving difficult, so I found a 3d schematic of a stepper motor holder from Jonathan Kayne and used it to print the holder. I got it printed and it worked quite nicely. 
@@ -159,15 +161,19 @@
 	
 	Then with lots of tape and faith, I got everything to fit inside. 
 	
+	\iffalse
 	\begin{center}
 		\includegraphics[width=3in]{project_images/6}
 	\end{center}
+	\fi
 	
 	\begin{center}
 		\includegraphics[width=5in]{project_images/7}
 	\end{center}
 
-	I got an external server running to accept connections from phones and the machine and got the machine script to run on startup and now we have what you see today. 
+	I got an external server running to accept connections from phones and the machine and got the machine script to run on startup and now we have what you see today. Overall, this project taught me how to get things communicating with each other, how different protocols work, and how to interpret different signals that are sent. 
+	
+	\pagebreak
 	
 	\Large{\textbf{References}}
 	
